@@ -1,1 +1,12 @@
-get http://localhost:3000/api/getData/
+
+POST http://localhost:2929/api/uploadBusiness
+Content-Type: application/json
+
+{
+    "placeName": "Sunrise Bakery",
+    "placeAddress": "123 Main St, Springfield",
+    "placeDescription": "Artisan breads and pastries",
+    "placeEmail": "hello@sunrisebakery.example",
+    "placePhone": "+1-555-0102",
+    "sellerID": "1"
+}

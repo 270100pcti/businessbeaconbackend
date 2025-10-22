@@ -3,16 +3,11 @@ const mysql = require('mysql2')
 const express = require('express');
 const http = require('http');
 const app = express();
+app.use(express.json());
 const server = http.createServer(app);
 
-const PORT = process.env.PORT || 3000;
+const PORT = 2929;
 
-app.get('/api/getData', (req, res) => {
-    res.status(200).send({
-        type: 'a lot of big',
-        size: 'huge'
-    });
-});
 
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
@@ -23,33 +18,40 @@ server.listen(PORT, () => {
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
-    user: process.env.DB_NAME,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DATABASE_NAME
+    database: process.env.DB_NAME
 })
 
 app.post('/api/uploadBusiness', (req, res) => {
-    const req_json = req.body;
-    const businessName = req_json.businessName;
-    const businessAddress = req_json.businessAddress;
-    const businessPhone = req_json.businessPhone;
-    const businessEmail = req_json.businessEmail;
 
-    const sql = 'INSERT INTO sellers (businessName, businessAddress, businessPhone, businessEmail) VALUES (?, ?, ?, ?)';
-    const values = [businessName, businessAddress, businessPhone, businessEmail];
+    //placeName, placeAddress, placeDescription, placeRating, placeEmail, placePhone, placeLogoPath, placeThumbnailPath, sellerID
+    const req_json = req.body;
+    const placeName = req_json.placeName;
+    const placeAddress = req_json.placeAddress;
+    const placeDescription = req_json.placeDescription;
+    const placeEmail = req_json.placeEmail;
+    const placePhone = req_json.placePhone;
+
+    const sellerID = req_json.sellerID;
+
+    
+
+    const sql = 'INSERT INTO places (placeName, placeAddress, placeDescription, placeEmail, placePhone, sellerID) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [placeName, placeAddress, placeDescription, placeEmail, placePhone, sellerID];
 
     db.query(sql, values, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
             res.status(500).send('Error inserting data');
         } else {
-            res.send(200);
+            res.sendStatus(200);
         }
     });
 })
 
 app.get('/api/getBusinesses', (req, res) => {
-    const sql = 'SELECT * FROM sellers';
+    const sql = 'SELECT * FROM places';
 
     db.query(sql, (err, results) => {
         if (err) {
@@ -61,7 +63,7 @@ app.get('/api/getBusinesses', (req, res) => {
     });
 })
 
-app.get("/api/storePage", (req, res) => {
+app.get("/api/getStorePage", (req, res) => {
     const sql = 'SELECT * FROM sellers WHERE id = ?';
     const businessId = req.query.id;
     

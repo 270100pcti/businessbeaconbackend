@@ -14,11 +14,11 @@ CREATE TABLE IF NOT EXISTS sellers (
 CREATE TABLE IF NOT EXISTS places (
     id INT AUTO_INCREMENT PRIMARY KEY,
     placeName VARCHAR(50) NOT NULL,
-    placeAddress VARCHAR(50) NOT NULL UNIQUE,
-    placeDescription VARCHAR(250) NOT NULL,
-    placeRating DOUBLE NOT NULL CHECK (placeRating >= 1 AND placeRating <= 10),
-    email VARCHAR(100),
-    phone VARCHAR(20),
+    placeAddress VARCHAR(50) NOT NULL,
+    placeDescription VARCHAR(250),
+    placeRating DOUBLE NOT NULL DEFAULT 5 CHECK (placeRating >= 1 AND placeRating <= 10),
+    placeEmail VARCHAR(100),
+    placePhone VARCHAR(20),
     placeLogoPath VARCHAR(255),
     placeThumbnailPath VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -38,10 +38,21 @@ CREATE TABLE IF NOT EXISTS analytics (
 );
 
 
--- Example: Insert sample data
 INSERT INTO sellers (username, email) VALUES 
     ('admin', 'admin@example.com'),
     ('testuser', 'test@example.com')
 ON DUPLICATE KEY UPDATE username=username;
 
--- Add more initialization SQL here as needed
+
+INSERT INTO places (placeName, placeAddress, placeDescription, placeRating, placeEmail, placePhone, placeLogoPath, placeThumbnailPath, sellerID) VALUES
+    ('Sunrise Cafe', '123 Main St, Springfield', 'Cozy cafe serving breakfast and specialty coffee.', 8.5, 'contact@sunrisecafe.example.com', '+1-555-0100', '/images/sunrise_logo.png', '/images/sunrise_thumb.png', 1),
+    ('Moonlight Lounge', '456 Oak Ave, Springfield', 'Late-night lounge with live music and cocktails.', 9.2, 'hello@moonlight.example.com', '+1-555-0123', '/images/moonlight_logo.png', '/images/moonlight_thumb.png', 2)
+ON DUPLICATE KEY UPDATE
+    placeName = VALUES(placeName),
+    placeDescription = VALUES(placeDescription),
+    placeRating = VALUES(placeRating),
+    placeEmail = VALUES(placeEmail),
+    placePhone = VALUES(placePhone),
+    placeLogoPath = VALUES(placeLogoPath),
+    placeThumbnailPath = VALUES(placeThumbnailPath),
+    sellerID = VALUES(sellerID);

@@ -25,7 +25,7 @@ services:
     container_name: businessbeacon-app
     restart: unless-stopped
     ports:
-      - "3000:3000"                  
+      - "2929:2929"                  
     environment:
       PORT: 3000
       DB_HOST: mysql
