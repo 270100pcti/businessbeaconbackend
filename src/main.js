@@ -103,7 +103,13 @@ app.get('/api/getBusinesses', (req, res) => {
 app.get("/api/getStorePage", (req, res) => {
     const sql = 'SELECT * FROM places WHERE id = ?';
     const req_json = req.headers;
-    const placeId = req.get("placeId")
+    const placeId = req.get("placeId");
+    if (placeId) {
+        //comment
+    } else {
+        res.status(300).send('Missing placeId');
+        return;
+    }
     
     db.query(sql, [placeId], (err, results) => {
         if (err) {
