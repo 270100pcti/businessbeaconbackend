@@ -3,7 +3,7 @@ POST http://localhost:2929/api/uploadBusiness
 Content-Type: application/json
 
 {
-    "placeName": "Sunrise Bakery",
+    "placeName": "Sunrsdsdise Bakery",
     "placeAddress": "123 Main St, Springfield",
     "placeDescription": "Artisan breads and pastries",
     "placeEmail": "hello@sunrisebakery.example",

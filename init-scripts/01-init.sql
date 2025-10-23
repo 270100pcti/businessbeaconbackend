@@ -15,12 +15,16 @@ CREATE TABLE IF NOT EXISTS places (
     id INT AUTO_INCREMENT PRIMARY KEY,
     placeName VARCHAR(50) NOT NULL,
     placeAddress VARCHAR(50) NOT NULL,
-    placeDescription VARCHAR(250),
+    placeDescription VARCHAR(600),
     placeRating DOUBLE NOT NULL DEFAULT 5 CHECK (placeRating >= 1 AND placeRating <= 10),
     placeEmail VARCHAR(100),
     placePhone VARCHAR(20),
     placeLogoPath VARCHAR(255),
     placeThumbnailPath VARCHAR(255),
+
+    totalOfReviews VARCHAR(50) NOT NULL DEFAULT 0,
+    countOfReviews VARCHAR(50) NOT NULL DEFAULT 0,
+    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     sellerID INT NOT NULL,
@@ -33,10 +37,19 @@ CREATE TABLE IF NOT EXISTS analytics (
     id INT AUTO_INCREMENT PRIMARY KEY,
     dataType VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    sellerID INT NOT NULL,
-    FOREIGN KEY (sellerID) REFERENCES sellers(id) ON DELETE CASCADE ON UPDATE CASCADE
+    placeID INT NOT NULL,
+    FOREIGN KEY (placeID) REFERENCES places(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    review VARCHAR(600) NOT NULL,
+    rating VARCHAR(10) NOT NULL,
+    creator VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    placeID INT NOT NULL,
+    FOREIGN KEY (placeID) REFERENCES places(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 INSERT INTO sellers (username, email) VALUES 
     ('admin', 'admin@example.com'),

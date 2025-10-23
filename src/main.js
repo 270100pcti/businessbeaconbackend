@@ -37,17 +37,22 @@ app.post('/api/uploadBusiness', (req, res) => {
 
     
 
-    const sql = 'INSERT INTO places (placeName, placeAddress, placeDescription, placeEmail, placePhone, sellerID) VALUES (?, ?, ?, ?, ?, ?)';
-    const values = [placeName, placeAddress, placeDescription, placeEmail, placePhone, sellerID];
-
+    const sql = 'INSERT INTO places (placeName, placeAddress, placeDescription, placeEmail, placePhone, totalOfReviews, countOfReviews, sellerID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    const values = [placeName, placeAddress, placeDescription, placeEmail, placePhone, 0, 0, sellerID];
+    //Create DB item
     db.query(sql, values, (err, result) => {
+        
         if (err) {
             console.error('Error inserting data:', err);
-            res.status(500).send('Error inserting data');
+            res.status(500).send('Error inserting data - ERR 0X001');
         } else {
-            res.sendStatus(200);
+            res.sendStatus(200)
+            console.log("Insterted data:");
+            console.log(result["insertId"]);
         }
     });
+
+
 })
 
 app.get('/api/getBusinesses', (req, res) => {
