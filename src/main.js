@@ -2,6 +2,8 @@
 const mysql = require('mysql2')
 const express = require('express');
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const app = express();
 app.use(express.json());
 const server = http.createServer(app);
@@ -100,8 +102,8 @@ app.get('/api/getBusinesses', (req, res) => {
 
 app.get("/api/getStorePage", (req, res) => {
     const sql = 'SELECT * FROM places WHERE id = ?';
-    const req_json = req.body;
-    const placeId = req_json.placeId;
+    const req_json = req.headers;
+    const placeId = req.get("placeId")
     
     db.query(sql, [placeId], (err, results) => {
         if (err) {
@@ -112,3 +114,8 @@ app.get("/api/getStorePage", (req, res) => {
         }
     });
 })
+
+
+app.get(/.*\.(svg|ico|png)$/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../uploads/places/logos', req.path));
+});
