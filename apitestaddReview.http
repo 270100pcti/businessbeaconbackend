@@ -1,0 +1,9 @@
+POST http://localhost:2929/api/uploadReview
+Content-Type: application/json
+
+{
+    "placeId": "1",
+    "review": "Delicious croissants and excellent coffee highly recommended!",
+    "rating": 5,
+    "creator": "jane.doe@example.com"
+}

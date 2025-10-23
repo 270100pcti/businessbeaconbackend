@@ -1,0 +1,6 @@
+GET http://localhost:2929/api/getStorePage
+Content-Type: application/json
+
+{
+    "placeId": 1
+}

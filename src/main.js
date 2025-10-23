@@ -25,7 +25,7 @@ const db = mysql.createConnection({
 
 app.post('/api/uploadBusiness', (req, res) => {
 
-    //placeName, placeAddress, placeDescription, placeRating, placeEmail, placePhone, placeLogoPath, placeThumbnailPath, sellerID
+    // [Outdated] placeName, placeAddress, placeDescription, placeRating, placeEmail, placePhone, placeLogoPath, placeThumbnailPath, sellerID
     const req_json = req.body;
     const placeName = req_json.placeName;
     const placeAddress = req_json.placeAddress;
@@ -51,8 +51,38 @@ app.post('/api/uploadBusiness', (req, res) => {
             console.log(result["insertId"]);
         }
     });
+})
 
+app.post('/api/uploadReview', (req, res) => {
 
+    
+    const req_json = req.body;
+    const placeId = req_json.placeId;
+    const review = req_json.review;
+    const rating = req_json.rating;
+    const creator = req_json.creator;
+
+    const updateSql = 'UPDATE places SET countOfReviews = countOfReviews + 1, totalOfReviews = totalOfReviews + ? WHERE id = ?';
+    db.query(updateSql, [rating, placeId], (err, updateResult) => {
+        if (err) {
+            console.error('Error updating place data:', err);
+            res.status(500).send('Error updating place data - ERR 0X002');
+            return;
+        }
+        
+
+        const insertSql = 'INSERT INTO reviews (review, rating, creator, placeId) VALUES (?, ?, ?, ?)';
+        db.query(insertSql, [review, rating, creator, placeId], (err, insertResult) => {
+            if (err) {
+                console.error('Error inserting review:', err);
+                res.status(500).send('Error inserting review - ERR 0X003');
+                return;
+            }
+            
+            res.sendStatus(200);
+            console.log("Added review for place ID:", placeId);
+        });
+    });
 })
 
 app.get('/api/getBusinesses', (req, res) => {
@@ -69,10 +99,11 @@ app.get('/api/getBusinesses', (req, res) => {
 })
 
 app.get("/api/getStorePage", (req, res) => {
-    const sql = 'SELECT * FROM sellers WHERE id = ?';
-    const businessId = req.query.id;
+    const sql = 'SELECT * FROM places WHERE id = ?';
+    const req_json = req.body;
+    const placeId = req_json.placeId;
     
-    db.query(sql, [businessId], (err, results) => {
+    db.query(sql, [placeId], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Error fetching data');
