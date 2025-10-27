@@ -228,9 +228,9 @@ async function handleImagePaths(id, path, imageType) {
                 const uploadsDir = p.join(__dirname, '..', 'uploads', 'images', 'places');
                 const fullPath = p.join(uploadsDir, filename);
 
-                if (fs.existsSync("./"+path)) {
-                    await fs.promises.unlink("./"+path);
-                    console.log('Deleted old image:', "./"+path);
+                if (fs.existsSync("./"+imagePath)) {
+                    await fs.promises.unlink("./"+imagePath);
+                    console.log('Deleted old image:', "./"+imagePath);
                 } else {
                     console.log('Old image not found, skipping delete:', fullPath);
                 }
