@@ -204,7 +204,17 @@ async function handleImagePaths(id, path, imageType) {
             resolve(rows);
         });
     });
+    function setNewImagePathSQL(id, newPath) {
+    const updateSql = `UPDATE places SET\`${imageType}\` = ? WHERE id = ?`;
+    db.query(updateSql, [newPath, id], (err, updateResult) => {
+        if (err) {
+            console.error('Error updating place data:', err);
+            res.status(500).send('Error updating place data - ERR 0X002');
+            return;
+        }
+    });
 
+    }
     if (imagePath) {
         //if it exists do this
         try {
@@ -222,11 +232,13 @@ async function handleImagePaths(id, path, imageType) {
                 } else {
                     console.log('Old image not found, skipping delete:', fullPath);
                 }
+                setNewImagePathSQL(id, path);
             }
         } catch (err) {
             console.error('Error deleting old image:', err);
         }
     } else {
+        setNewImagePathSQL(id, path);
         // no value
     }
 
