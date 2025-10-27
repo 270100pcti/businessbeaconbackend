@@ -89,6 +89,28 @@ app.post('/api/uploadReview', (req, res) => {
     });
 })
 
+app.get("/api/getReviews", (req, res) => {
+    const sql = 'SELECT * FROM reviews WHERE placeID = ?';
+    const req_json = req.headers;
+    const placeId = req.get("placeId");
+    if (placeId) {
+        //comment
+    } else {
+        res.status(300).send('Missing placeId');
+        return;
+    }
+    
+    db.query(sql, [placeId], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).send('Error fetching data');
+        } else {
+            res.json(results);
+        }
+    });
+    
+})
+
 app.get('/api/getBusinesses', (req, res) => {
     const sql = 'SELECT * FROM places';
 
