@@ -60,7 +60,7 @@ app.post('/api/uploadBusiness', (req, res) => {
 app.post('/api/uploadReview', (req, res) => {
 
     
-    const req_json = req.body;
+    const req_json = req.body.json ? req.body.json : req.body;
     const placeId = req_json.placeId;
     const review = req_json.review;
     const rating = req_json.rating;
@@ -136,7 +136,8 @@ app.get("/api/getStorePage", (req, res) => {
 
 
 app.get(/.*\.(svg|ico|png|jpg|jpeg|gif|webp)$/, (req, res) => {
-    res.sendFile(path.join(__dirname, '../', req.path));
+    const img_path = req.path.replace('/api/', '');
+    res.sendFile(path.join(__dirname, '../', img_path));
 });
 
 
