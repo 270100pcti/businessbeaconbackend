@@ -121,6 +121,17 @@ app.get("/api/getStorePage", (req, res) => {
             res.json(results);
         }
     });
+
+    // analytics
+        db.query('INSERT INTO analytics (dataType, placeId) VALUES (?, ?)', ["placePageLoad", placeId], (err, insertResult) => {
+            if (err) {
+                console.error('Error inserting analytics, ERR 3X001 error:', err);
+                return;
+            }
+            
+            console.log("Added analytics for place ID:", placeId);
+        });
+    
 })
 
 
