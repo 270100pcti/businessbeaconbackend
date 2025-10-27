@@ -136,7 +136,7 @@ app.get("/api/getStorePage", (req, res) => {
 
 
 app.get(/.*\.(svg|ico|png|jpg|jpeg|gif|webp)$/, (req, res) => {
-    res.sendFile(path.join(__dirname, '../', req.path));
+    res.sendFile(path.join(__dirname, '../uploads/images', req.path));
 });
 
 
