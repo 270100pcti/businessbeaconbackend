@@ -1,0 +1,4 @@
+GET http://localhost:2929/api/getBusinesses?name=moon
+
+
+// or to just get all: GET http://localhost:2929/api/getBusinesses

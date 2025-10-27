@@ -112,9 +112,18 @@ app.get("/api/getReviews", (req, res) => {
 })
 
 app.get('/api/getBusinesses', (req, res) => {
-    const sql = 'SELECT * FROM places';
+    const searchTerm = req.query.name;
 
-    db.query(sql, (err, results) => {
+    let sql, values;
+    if (searchTerm) {
+        sql = 'SELECT * FROM places WHERE placeName LIKE ?';
+        values = [`%${searchTerm}%`];
+    } else {
+        sql = 'SELECT * FROM places';
+        values = [];
+    }
+
+    db.query(sql, values, (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Error fetching data');
@@ -122,7 +131,8 @@ app.get('/api/getBusinesses', (req, res) => {
             res.json(results);
         }
     });
-})
+});
+
 
 app.get("/api/getStorePage", (req, res) => {
     const sql = 'SELECT * FROM places WHERE id = ?';
