@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "placeId": "1",
-    "review": "Delicious croissants and excellent coffee highly recommended!",
-    "rating": 5,
-    "creator": "jane.doe@example.com"
+    "review": "I ordered 67 tacos and 67 crossiants, but like it was absouletly terrible and my experience was yucky!",
+    "rating": 6.7,
+    "creator": "67isawesonme@example.com"
 }

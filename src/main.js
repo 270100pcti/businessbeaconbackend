@@ -124,8 +124,8 @@ app.get("/api/getStorePage", (req, res) => {
 })
 
 
-app.get(/\/api\/.*\.(svg|ico|png)$/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../uploads/places/logos', path.basename(req.path)));
+app.get(/.*\.(svg|ico|png|jpg|jpeg|gif|webp)$/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../', req.path));
 });
 
 
@@ -228,9 +228,9 @@ async function handleImagePaths(id, path, imageType) {
                 const uploadsDir = p.join(__dirname, '..', 'uploads', 'images', 'places');
                 const fullPath = p.join(uploadsDir, filename);
 
-                if (fs.existsSync(fullPath)) {
-                    await fs.promises.unlink(fullPath);
-                    console.log('Deleted old image:', fullPath);
+                if (fs.existsSync("./"+path)) {
+                    await fs.promises.unlink("./"+path);
+                    console.log('Deleted old image:', "./"+path);
                 } else {
                     console.log('Old image not found, skipping delete:', fullPath);
                 }
