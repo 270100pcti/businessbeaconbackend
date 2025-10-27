@@ -4,6 +4,8 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
+const p = require('path');
 const app = express();
 app.use(express.json());
 const server = http.createServer(app);
@@ -122,6 +124,158 @@ app.get("/api/getStorePage", (req, res) => {
 })
 
 
-app.get(/.*\.(svg|ico|png)$/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../uploads/places/logos', req.path));
+app.get(/\/api\/.*\.(svg|ico|png)$/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../uploads/places/logos', path.basename(req.path)));
+});
+
+
+
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = './uploads/images/places';
+
+        
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        // Generate unique filename
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// File filter to only accept images
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'));
+    }
+};
+
+// Initialize multer
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: fileFilter
+});
+
+async function handleImagePaths(id, path, imageType) {
+    if (!id) throw new Error('handleImagePaths: missing id');
+    if (!path) throw new Error('handleImagePaths: missing path');
+    if (!imageType) throw new Error('handleImagePaths: missing imageType');
+
+    // ensure result has format "/images/<filename>"
+    const filename = (typeof path === 'string') ? (() => {
+        const idx = path.indexOf('/images/');
+        if (idx !== -1) return path.slice(idx + '/images/'.length);
+        return p.basename(path);
+    })() : '';
+
+    if (!filename) throw new Error('handleImagePaths: cannot determine filename from path');
+
+    const normalized = '/images/' + filename.replace(/^\/+/, '');
+
+    // --- // --- // // --- // --- // // --- // --- // // --- // --- // // --- // --- // 
+    // Validate imageType to avoid SQL injection
+    const allowedImageCols = ['placeLogoPath', 'placeThumbnailPath'];
+    if (!allowedImageCols.includes(imageType)) {
+        throw new Error('handleImagePaths: invalid imageType');
+    }
+
+    // Query the DB for the requested image column for this id
+    const imagePath = "";
+    const sql = `SELECT \`${imageType}\` AS imgpath FROM places WHERE id = ?`;
+    const results = await new Promise((resolve, reject) => {
+        db.query(sql, [id], (err, rows) => {
+            console.log(rows);
+            console.log(rows[0].imgpath);
+            imagePath = rows[0].imgpath;
+            if (err) return reject(err);
+            resolve(rows);
+        });
+    });
+
+    if (imagePath) {
+        //if it exists do this
+        try {
+            const row = results && results[0];
+            const dbImg = row ? row.imgpath : null;
+            if (dbImg) {
+                const idx = dbImg.indexOf('/images/');
+                const filename = (idx !== -1) ? dbImg.slice(idx + '/images/'.length) : p.basename(dbImg);
+                const uploadsDir = p.join(__dirname, '..', 'uploads', 'images', 'places');
+                const fullPath = p.join(uploadsDir, filename);
+
+                if (fs.existsSync(fullPath)) {
+                    await fs.promises.unlink(fullPath);
+                    console.log('Deleted old image:', fullPath);
+                } else {
+                    console.log('Old image not found, skipping delete:', fullPath);
+                }
+            }
+        } catch (err) {
+            console.error('Error deleting old image:', err);
+        }
+    } else {
+        // no value
+    }
+
+    // const dbRow = results && results[0];
+    // const dbPath = dbRow ? dbRow.imgpath : null;
+
+    // // If DB has a value, normalize and return it; otherwise fall back to the provided path
+    // if (dbPath) {
+    //     const idx = dbPath.indexOf('/images/');
+    //     const filenameFromDb = (idx !== -1) ? dbPath.slice(idx + '/images/'.length) : p.basename(dbPath);
+    //     const finalNormalized = '/images/' + filenameFromDb.replace(/^\/+/, '');
+    //     return { id, path: finalNormalized };
+    // }
+
+    // If no DB value, keep the already-computed normalized path
+    // (outer return will also return normalized if this block isn't reached)
+
+    // --- // --- //
+    return { id, path: normalized };
+}
+
+// SINGLE FILE UPLOAD
+app.post('/api/uploadImage', upload.single('image'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        
+        
+        
+        // Extract id and imageType from request body
+        const { id, imageType } = req.body;
+        
+        handleImagePaths(id, req.file.path, imageType);
+        
+
+        res.status(200).json({
+            message: 'File uploaded successfully',
+            file: {
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                mimetype: req.file.mimetype,
+                size: req.file.size,
+                path: req.file.path
+            },
+            id: id,
+            imageType: imageType
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
