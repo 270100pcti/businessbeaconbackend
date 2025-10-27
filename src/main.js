@@ -193,7 +193,7 @@ async function handleImagePaths(id, path, imageType) {
     }
 
     // Query the DB for the requested image column for this id
-    const imagePath = "";
+    let imagePath = "";
     const sql = `SELECT \`${imageType}\` AS imgpath FROM places WHERE id = ?`;
     const results = await new Promise((resolve, reject) => {
         db.query(sql, [id], (err, rows) => {
@@ -208,9 +208,11 @@ async function handleImagePaths(id, path, imageType) {
     const updateSql = `UPDATE places SET\`${imageType}\` = ? WHERE id = ?`;
     db.query(updateSql, [newPath, id], (err, updateResult) => {
         if (err) {
-            console.error('Error updating place data:', err);
-            res.status(500).send('Error updating place data - ERR 0X002');
+            console.error('Error updating path of image:', err);
+            res.status(500).send('Error updating path of image- ERR 1X002');
             return;
+        } else {
+            console.log("Updatd the value of the image path");
         }
     });
 
