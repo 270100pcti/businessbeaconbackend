@@ -58,8 +58,8 @@ ON DUPLICATE KEY UPDATE username=username;
 
 
 INSERT INTO places (placeName, placeAddress, placeDescription, placeRating, placeEmail, placePhone, placeLogoPath, placeThumbnailPath, sellerID) VALUES
-    ('Sunrise Cafe', '123 Main St, Springfield', 'Cozy cafe serving breakfast and specialty coffee.', 8.5, 'contact@sunrisecafe.example.com', '+1-555-0100', '/images/sunrise_logo.png', '/images/sunrise_thumb.png', 1),
-    ('Moonlight Lounge', '456 Oak Ave, Springfield', 'Late-night lounge with live music and cocktails.', 9.2, 'hello@moonlight.example.com', '+1-555-0123', '/images/moonlight_logo.png', '/images/moonlight_thumb.png', 2)
+    ('Sunrise Cafe', '123 Main St, Springfield', 'Cozy cafe serving breakfast and specialty coffee.', 8.5, 'contact@sunrisecafe.example.com', '+1-555-0100', 'uploads/images/places/image-1761596210054-755960422.jpg', '/images/sunrise_thumb.png', 1),
+    ('Moonlight Lounge', '456 Oak Ave, Springfield', 'Late-night lounge with live music and cocktails.', 9.2, 'hello@moonlight.example.com', '+1-555-0123', 'uploads/images/places/image-1761596214231-425349978.jpg', '/images/moonlight_thumb.png', 2)
 ON DUPLICATE KEY UPDATE
     placeName = VALUES(placeName),
     placeDescription = VALUES(placeDescription),
