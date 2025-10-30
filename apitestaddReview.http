@@ -2,8 +2,8 @@ POST http://localhost:2929/api/uploadReview
 Content-Type: application/json
 
 {
-    "placeId": "1",
-    "review": "I ordered 67 tacos and 67 crossiants, but like it was absouletly terrible and my experience was yucky!",
-    "rating": 6.7,
+    "placeId": "81",
+    "review": "Great place, atmosphere happy to find this hidden gem!!!",
+    "rating": 5,
     "creator": "67isawesonme@example.com"
 }

@@ -1,4 +1,4 @@
 GET http://localhost:2929/api/getReviews
 Content-Type: application/json
-placeId: 1
+placeId: 
 
