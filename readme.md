@@ -1,6 +1,9 @@
 # BUSINESS BEACON
 An app to help consumers to help connect with businesses
 
+# INFO
+Building this app from scratch was no easy feat-- it undeniably had its drawbacks as we continuously ran into walls throughout the development process. It felt like each time we would add a new component to the app, the rest would start to fail, and thus, the strenuous process of debugging would start over once again. As said in a previous essay, the app is summarized into three parts: the user page, the business page and the database that bridges the two aforementioned worlds. The business page and the user page are both frontends, displaying the fruits of labor generated from the backend, otherwise known as the database. Such a task to connect all three provided many difficulties in development. As a team of four, we decided to split up the three tasks: one person would handle the database, one would handle the user page and the other two would handle the business page.  
+
 # HOW TO  RUN
 To run the app, clone the repo and run the following commands:
 
